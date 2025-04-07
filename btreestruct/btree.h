@@ -2,7 +2,6 @@
 #define BTREE_H
 
 #define _CRT_SECURE_NO_WARNINGS
-#include <time.h>
 #include "WIFI.h"
 
 typedef struct btree_item
