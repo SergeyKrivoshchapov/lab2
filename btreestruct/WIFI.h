@@ -45,7 +45,7 @@ int struct_init_result(const enum ERROR_CODE result_code);
 
 int init_userdata(WIFI* router);
 
-void copy_struct(const WIFI* router, WIFI* copy);
+void copy_struct(const WIFI* src, WIFI* dest);
 
 //Функция для вывода всех полей структуры.
 //В качестве аргумента получает структуру по указателю.
@@ -59,9 +59,7 @@ int update_vendor_name(WIFI* router, const char* value);
 
 int update_5G_mark(WIFI* router, const enum _5G_MARK value);
 
-WIFI* dynamic_struct_create(const char* vendor, const unsigned short port_count, const enum _5G_MARK has_5G);
-
-WIFI* dynamic_struct_free(WIFI* dym_struct_ptr);
+void dynamic_struct_free(WIFI* dym_struct_ptr);
 
 // Проверяет равенство двух экземпляров структуры посредством сравнения значений по каждому из полей экземпляров. 
 // Возвращает 1, если экземпляры идентичны.
@@ -74,4 +72,4 @@ int compare(const WIFI* router1, const WIFI* router2);
 
 int compare_int(const WIFI* router1, const WIFI* router2);
 
-#endif /* WIFI_H */
+#endif

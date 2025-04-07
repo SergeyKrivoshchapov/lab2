@@ -1,4 +1,5 @@
 #include "btree.h"
+
 int main()
 {
     btree_item* root = NULL;
@@ -12,14 +13,29 @@ int main()
 
     for (int i = 0; i < toinsert_amount; i++)
     {
-        WIFI router;
-        printf("\nRouter #%d:\n", i+1);
-        if (init_userdata(&router) != 0)
+        WIFI* router = (WIFI*)malloc(sizeof(WIFI));
+        if (!router)
         {
-            puts("Error initializing router data.");
+            puts("Struct allocation failed");
+            delete_btree(&root);
             return 1;
         }
-        insert_btree(&router, &root);
+
+        printf("\nRouter %d:\n", i+1);
+        if (init_userdata(router) != 0)
+        {
+            free(router);
+            router = NULL;
+            delete_btree(&root);
+            return 1;
+        }
+        if (!insert_btree(router, &root))
+        {
+            free(router);
+            delete_btree(&root);
+            puts("Failed to insert");
+            return 1;
+        }
     }
 
     int vert_count = vertex_count(root);
@@ -36,19 +52,18 @@ int main()
     if (init_userdata(&router_to_delete) != 0)
     {
         puts("Error initializing router data.");
+        delete_btree(&root);
         return 1;
     }
 
-    if (extract_value(&router_to_delete, &root))
-        puts("\nRouter deleted from tree successfully");
-    else
-        puts("\nRouter not found in tree");
+    WIFI* extracted = extract_value(&router_to_delete, &root);
+    no_use_extracted(extracted);
 
-    puts("\nTree after deletion:");
+    puts("\nTree after deleting element:");
     print_btree_incr(root);
     
     delete_btree(&root);
-    root = NULL;
+
     puts("\nTree fully deleted successfully");
     return 0;
 }

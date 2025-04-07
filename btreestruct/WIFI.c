@@ -94,11 +94,14 @@ int init_userdata(WIFI* router)
 	return 0;
 }
 
-void copy_struct(const WIFI* router, WIFI* copy)
+void copy_struct(const WIFI* src, WIFI* dest)
 {
-    strcpy(copy->vendor, router->vendor);
-    copy->port_count = router->port_count;
-    copy->has_5G = router->has_5G;
+    if (!src || !dest) return;
+    
+    strncpy(dest->vendor, src->vendor, MAX_VENDOR_LENGTH);
+    dest->vendor[MAX_VENDOR_LENGTH - 1] = '\0';
+    dest->port_count = src->port_count;
+    dest->has_5G = src->has_5G;
 }
 
 void print_struct(const WIFI* router)
@@ -106,7 +109,7 @@ void print_struct(const WIFI* router)
     printf("Brand name: %s \nport_count: %d\nhas 5g: %s\n\n ",
     router->vendor,
     router->port_count,
-    router->has_5G ? "yes":"no");
+    router->has_5G == Is5G ? "yes" : "no");
 }
 
 int field_changing(WIFI* router)
@@ -128,7 +131,7 @@ int field_changing(WIFI* router)
 		init_checkmark = struct_init_result(update_port_count(router, port_count_tochange));
 		break;
         case 3:
-                unsigned short _5G_mark_tochange = input_5G_mark("\nEnter new 5G mark value: ");
+                enum _5G_MARK _5G_mark_tochange = input_5G_mark("\nEnter new 5G mark value: ");
 		init_checkmark = struct_init_result(update_5G_mark(router, _5G_mark_tochange));
 		break;
         default:
@@ -158,22 +161,9 @@ int update_5G_mark(WIFI* router, const enum _5G_MARK value)
 	return router_DataCheck(router);
 }
 
-WIFI* dynamic_struct_create(const char* vendor, const unsigned short port_count, const enum _5G_MARK has_5G)
-{
-	WIFI* router = (WIFI*)malloc(sizeof(WIFI));
-    
-	if (!router) return NULL;
-
-	if (struct_init_result(init_struct(router, vendor, port_count, has_5G)) == 0) return router;
-
-	dynamic_struct_free(router);
-	return NULL; 
-}
-
-WIFI* dynamic_struct_free(WIFI* dym_struct_ptr)
+void dynamic_struct_free(WIFI* dym_struct_ptr)
 { 
 	free(dym_struct_ptr);
-	dym_struct_ptr = NULL;
 }
 
 int is_equal(const WIFI* router1, const WIFI* router2)
@@ -184,7 +174,7 @@ int is_equal(const WIFI* router1, const WIFI* router2)
 int compare(const WIFI* router1, const WIFI* router2)
 {
 	int vend_cmp_result = strcmp(router2->vendor, router1->vendor);
-	if (vend_cmp_result != 0) return (vend_cmp_result < 0);
+	if (vend_cmp_result != 0) return (vend_cmp_result < 0 ? 1 : 0);
 	return compare_int(router1, router2); 
 }
 
@@ -192,13 +182,8 @@ int compare(const WIFI* router1, const WIFI* router2)
 // Returns 1 if p2 is bigger. Else 0. 
 int compare_int(const WIFI* router1, const WIFI* router2)
 {
-	if (router2->port_count != router1->port_count)
-	{
-		if ((router2->port_count > router1->port_count)) return 1;
-		return 0;
-	}
-	if (router2->has_5G > router1->has_5G) return 1;
-	return 0;
+	if (router2->port_count != router1->port_count) return (router2->port_count > router1->port_count ? 0 : 1);
+	return (router2->has_5G > router1->has_5G ? 1 : 0);
 }
 
 #endif 
