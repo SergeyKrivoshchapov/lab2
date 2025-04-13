@@ -51,16 +51,6 @@ void copy_struct(const WIFI* src, WIFI* dest);
 //В качестве аргумента получает структуру по указателю.
 void print_struct(const WIFI* router);
 
-int field_changing(WIFI* router);
-
-int update_port_count(WIFI* router, const unsigned short value);
-
-int update_vendor_name(WIFI* router, const char* value);
-
-int update_5G_mark(WIFI* router, const enum _5G_MARK value);
-
-void dynamic_struct_free(WIFI* dym_struct_ptr);
-
 // Проверяет равенство двух экземпляров структуры посредством сравнения значений по каждому из полей экземпляров. 
 // Возвращает 1, если экземпляры идентичны.
 int is_equal(const WIFI* router1, const WIFI* router2);

@@ -13,6 +13,8 @@ int input_int(const char* message)
 	if ((atoi(buffer) == 0 && buffer[0] != '0') || (atoi(buffer) >= USHRT_MAX) || (atoi(buffer) < 0) || (strcmp(buffer, temp) != 0))
 	{
 		printf("Entered value is incorrect.");
+		int temp;
+		while((temp = getchar()) != '\n' && temp != EOF); 
 		exit(EXIT_FAILURE);
 	}
 	return atoi(buffer);
@@ -110,60 +112,6 @@ void print_struct(const WIFI* router)
     router->vendor,
     router->port_count,
     router->has_5G == Is5G ? "yes" : "no");
-}
-
-int field_changing(WIFI* router)
-{
-    int field_tochange = input_int("\nWhich field you want to change?\n1 - brand name\n2 - port count\n3 - Wifi 5G Mark\nEnter any other symbol if you won't change anything\n\nEnter only digit: ");
-
-    short init_checkmark;
-
-    switch (field_tochange)
-    {
-        case 1:
-        	char vendor_name_tochange[MAX_VENDOR_LENGTH];
-		printf("\nEnter new vendor value: ");
-		input_string(vendor_name_tochange, MAX_VENDOR_LENGTH);
-		init_checkmark = struct_init_result(update_vendor_name(router, vendor_name_tochange));
-		break;
-        case 2:
-		unsigned short port_count_tochange = input_int("\nEnter new port count value: ");
-		init_checkmark = struct_init_result(update_port_count(router, port_count_tochange));
-		break;
-        case 3:
-                enum _5G_MARK _5G_mark_tochange = input_5G_mark("\nEnter new 5G mark value: ");
-		init_checkmark = struct_init_result(update_5G_mark(router, _5G_mark_tochange));
-		break;
-        default:
-                printf("\nUndefined value received. Nothing will be changed.\n");
-		break;
-    }
-    if (init_checkmark == 0) return 0;
-
-    return 1;
-}
-
-int update_port_count(WIFI* router, const unsigned short value)
-{
-	router->port_count = value;
-	return router_DataCheck(router);
-}
-
-int update_vendor_name(WIFI* router, const char* value)
-{
-	strncpy(router->vendor, value, MAX_VENDOR_LENGTH);
-	return router_DataCheck(router);
-}
-
-int update_5G_mark(WIFI* router, const enum _5G_MARK value)
-{
-	router->has_5G = value;
-	return router_DataCheck(router);
-}
-
-void dynamic_struct_free(WIFI* dym_struct_ptr)
-{ 
-	free(dym_struct_ptr);
 }
 
 int is_equal(const WIFI* router1, const WIFI* router2)
