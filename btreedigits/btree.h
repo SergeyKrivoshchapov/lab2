@@ -19,7 +19,7 @@ typedef struct btree_item // узел бинарного дерева
 	struct btree_item* right; // указатель правое поддерево
 }btree_item;
 
-void insert_btree(int val, btree_item** vert);
+int insert_btree(int val, btree_item** vert);
 
 void print_btree_incr(const btree_item* vert); 
 

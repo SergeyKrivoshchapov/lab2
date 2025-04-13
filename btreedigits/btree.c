@@ -1,17 +1,22 @@
 #include "btree.h"
 
-void insert_btree (const int val, btree_item** vert) 
+// 0 = err
+int insert_btree (const int val, btree_item** vert) 
 {
+	if (!vert) return 0;
+
 	if ((*vert) == NULL) 
 	{
 		*vert = (btree_item*)malloc(sizeof(btree_item));
+		if (!(vert)) return 0;
+
 		(*vert)->left = (*vert)->right = NULL;
 		(*vert)->value = val;
-		return;
+		return 1;
 	}
 	
-	if ((*vert)->value > val) insert_btree(val, &((*vert)->left));
-	else insert_btree(val, &((*vert)->right));
+	if ((*vert)->value > val) return insert_btree(val, &((*vert)->left));
+	else return insert_btree(val, &((*vert)->right));
 }
 
 void print_btree_incr(const btree_item* vert)
@@ -94,7 +99,7 @@ int extract_value(const int key, btree_item** vert)
 
 void delete_btree(btree_item** vert)
 {
-	if (*vert == NULL) return;
+	if ((!*vert) || (!vert)) return;
 
 	delete_btree(&((*vert)->left));
 	delete_btree(&((*vert)->right));
@@ -125,6 +130,8 @@ void input_string(char* buffer, int buffer_size)
 	else
 	{
 		printf("Entered value is too long or empty.\n");
+		int temp; 
+		while ((temp = getchar()) != '\n' && temp != EOF);
 		exit(EXIT_FAILURE);
 	}
 }
